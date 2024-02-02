@@ -18,6 +18,6 @@ const queryClient = new QueryClient({
   },
 })
 
-const medusaClient = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3, publishableApiKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY})
+const medusaClient = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3, publishableApiKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY,})
 
 export { MEDUSA_BACKEND_URL, queryClient, medusaClient }
