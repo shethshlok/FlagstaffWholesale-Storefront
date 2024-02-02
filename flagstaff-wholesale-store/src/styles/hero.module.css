@@ -1,0 +1,101 @@
+.video {
+  position: relative;
+  width: 100%;
+  height: 1080px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video video {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: brightness(0.8) contrast(1.4);
+}
+
+.Container {
+  position: absolute;
+  transform: translate(-50%, 0);
+  top: 0;
+  left: 50%;
+}
+
+#bubbles {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  width: 280px !important;
+  height: 280px !important;
+}
+
+#bubblesImage1 {
+  animation: vertMovement 5s infinite;
+}
+#bubblesImage2 {
+  animation: vertMovement 5s 0.7s infinite;
+  transform: translateY(50px);
+}
+
+#medusaLogo {
+  transform: perspective(800px) rotateY(16deg) scale(0.9) rotateX(10deg);
+  animation-name: Prespect;
+  transition: 0.8s ease-in-out;
+  animation-duration: 4s;
+}
+
+#medusaLogo img {
+  animation-name: movement;
+  animation-duration: 6s;
+  transition: 0.8s ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes Prespect {
+  0% {
+    transform: perspective(0px) rotateY(25deg) scale(0.8) rotateX(10deg);
+  }
+  50% {
+    transform: perspective(800px);
+  }
+  75% {
+    transform: perspective(800px) rotateY(-15deg) rotateX(10deg);
+  }
+  100% {
+    transform: perspective(800px) rotateY(16deg) scale(0.9) rotateX(10deg);
+  }
+}
+
+@keyframes movement {
+  0% {
+    scale: 1;
+  }
+  50% {
+    scale: 0.9;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes vertMovement {
+  0% {
+    scale: 1;
+    margin-bottom: 0px;
+  }
+  50% {
+    scale: 0.8;
+    margin-bottom: 20px;
+  }
+  100% {
+    scale: 1;
+    margin-bottom: 0px;
+  }
+}

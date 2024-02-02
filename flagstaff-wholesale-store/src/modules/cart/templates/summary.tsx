@@ -1,29 +1,21 @@
-"use client"
-
-import { Button, Heading } from "@medusajs/ui"
-
+import { Cart } from "@medusajs/medusa"
+import Button from "@modules/common/components/button"
 import CartTotals from "@modules/common/components/cart-totals"
-import Divider from "@modules/common/components/divider"
-import { CartWithCheckoutStep } from "types/global"
-import DiscountCode from "@modules/checkout/components/discount-code"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Link from "next/link"
 
 type SummaryProps = {
-  cart: CartWithCheckoutStep
+  cart: Omit<Cart, "refundable_amount" | "refunded_total">
 }
 
 const Summary = ({ cart }: SummaryProps) => {
   return (
-    <div className="flex flex-col gap-y-4">
-      <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
-        Summary
-      </Heading>
-      <DiscountCode cart={cart} />
-      <Divider />
-      <CartTotals data={cart} />
-      <LocalizedClientLink href={"/checkout?step=" + cart.checkout_step}>
-        <Button className="w-full h-10">Go to checkout</Button>
-      </LocalizedClientLink>
+    <div className="grid grid-cols-1 gap-y-6">
+      <CartTotals cart={cart} />
+      <Link href="/checkout">
+        <a>
+          <Button>Go to checkout</Button>
+        </a>
+      </Link>
     </div>
   )
 }

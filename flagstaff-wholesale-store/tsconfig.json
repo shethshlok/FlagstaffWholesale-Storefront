@@ -20,12 +20,7 @@
       "@lib/*": ["lib/*"],
       "@modules/*": ["modules/*"],
       "@pages/*": ["pages/*"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    }
   },
   "include": [
     "next-env.d.ts",
@@ -35,7 +30,6 @@
     "cypress/support/commands.js",
     "cypress/integration/product.spec.js",
     "cypress/plugins/index.js",
-    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

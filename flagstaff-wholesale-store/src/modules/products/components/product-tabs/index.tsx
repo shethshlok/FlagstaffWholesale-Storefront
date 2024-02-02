@@ -1,55 +1,69 @@
-"use client"
-
-import { PricedProduct } from "@medusajs/medusa/dist/types/pricing"
-
+import { Tab } from "@headlessui/react"
+import { Product } from "@medusajs/medusa"
 import Back from "@modules/common/icons/back"
 import FastDelivery from "@modules/common/icons/fast-delivery"
 import Refresh from "@modules/common/icons/refresh"
-
-import Accordion from "./accordion"
+import clsx from "clsx"
+import { useMemo } from "react"
 
 type ProductTabsProps = {
-  product: PricedProduct
+  product: Product
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
-  const tabs = [
-    {
-      label: "Product Information",
-      component: <ProductInfoTab product={product} />,
-    },
-    {
-      label: "Shipping & Returns",
-      component: <ShippingInfoTab />,
-    },
-  ]
+  const tabs = useMemo(() => {
+    return [
+      {
+        label: "Product Information",
+        component: <ProductInfoTab product={product} />,
+      },
+      {
+        label: "Shipping & Returns",
+        component: <ShippingInfoTab />,
+      },
+    ]
+  }, [product])
 
   return (
-    <div className="w-full">
-      <Accordion type="multiple">
-        {tabs.map((tab, i) => (
-          <Accordion.Item
-            key={i}
-            title={tab.label}
-            headingSize="medium"
-            value={tab.label}
-          >
-            {tab.component}
-          </Accordion.Item>
-        ))}
-      </Accordion>
+    <div>
+      <Tab.Group>
+        <Tab.List className="border-b border-gray-200 box-border grid grid-cols-2">
+          {tabs.map((tab, i) => {
+            return (
+              <Tab
+                key={i}
+                className={({ selected }) =>
+                  clsx(
+                    "text-left uppercase text-small-regular pb-2 -mb-px border-b border-gray-200 transition-color duration-150 ease-in-out",
+                    {
+                      "border-b border-gray-900": selected,
+                    }
+                  )
+                }
+              >
+                {tab.label}
+              </Tab>
+            )
+          })}
+        </Tab.List>
+        <Tab.Panels>
+          {tabs.map((tab, j) => {
+            return <div key={j}>{tab.component}</div>
+          })}
+        </Tab.Panels>
+      </Tab.Group>
     </div>
   )
 }
 
 const ProductInfoTab = ({ product }: ProductTabsProps) => {
   return (
-    <div className="text-small-regular py-8">
+    <Tab.Panel className="text-small-regular py-8">
       <div className="grid grid-cols-2 gap-x-8">
         <div className="flex flex-col gap-y-4">
           <div>
             <span className="font-semibold">Material</span>
-            <p>{product.material ? product.material : "-"}</p>
+            <p>{product.origin_country ? product.origin_country : "-"}</p>
           </div>
           <div>
             <span className="font-semibold">Country of origin</span>
@@ -75,18 +89,18 @@ const ProductInfoTab = ({ product }: ProductTabsProps) => {
           </div>
         </div>
       </div>
-      {product.tags?.length ? (
+      {product.tags.length ? (
         <div>
           <span className="font-semibold">Tags</span>
         </div>
       ) : null}
-    </div>
+    </Tab.Panel>
   )
 }
 
 const ShippingInfoTab = () => {
   return (
-    <div className="text-small-regular py-8">
+    <Tab.Panel className="text-small-regular py-8">
       <div className="grid grid-cols-1 gap-y-8">
         <div className="flex items-start gap-x-2">
           <FastDelivery />
@@ -120,7 +134,7 @@ const ShippingInfoTab = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Tab.Panel>
   )
 }
 

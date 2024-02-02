@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation"
 import {
   ChangeEvent,
   FormEvent,
@@ -7,10 +6,11 @@ import {
   useRef,
   useState,
 } from "react"
-import { UseSearchBoxProps, useSearchBox } from "react-instantsearch-hooks-web"
+import { useSearchBox, UseSearchBoxProps } from "react-instantsearch-hooks-web"
 
 export type ControlledSearchBoxProps = React.ComponentProps<"div"> & {
   inputRef: RefObject<HTMLInputElement>
+  isSearchStalled: boolean
   onChange(event: ChangeEvent): void
   onReset(event: FormEvent): void
   onSubmit?(event: FormEvent): void
@@ -22,6 +22,7 @@ type SearchBoxProps = {
   children: (state: {
     value: string
     inputRef: RefObject<HTMLInputElement>
+    isSearchStalled: boolean
     onChange: (event: ChangeEvent<HTMLInputElement>) => void
     onReset: () => void
     placeholder: string
@@ -34,11 +35,9 @@ const SearchBoxWrapper = ({
   placeholder = "Search products...",
   ...rest
 }: SearchBoxProps) => {
-  const { query, refine } = useSearchBox(rest)
+  const { query, refine, isSearchStalled } = useSearchBox(rest)
   const [value, setValue] = useState(query)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const router = useRouter()
 
   const onReset = () => {
     setValue("")
@@ -46,12 +45,6 @@ const SearchBoxWrapper = ({
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.currentTarget.value)
-  }
-
-  const onSubmit = () => {
-    if (value) {
-      router.push(`/results/${value}`)
-    }
   }
 
   useEffect(() => {
@@ -81,8 +74,8 @@ const SearchBoxWrapper = ({
   const state = {
     value,
     inputRef,
+    isSearchStalled,
     onChange,
-    onSubmit,
     onReset,
     placeholder,
   }

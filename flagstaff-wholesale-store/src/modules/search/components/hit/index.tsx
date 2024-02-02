@@ -1,8 +1,6 @@
 import { ProductVariant } from "@medusajs/medusa"
-import { Container, Text } from "@medusajs/ui"
-
 import Thumbnail from "@modules/products/components/thumbnail"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Link from "next/link"
 
 export type ProductHit = {
   id: string
@@ -15,29 +13,30 @@ export type ProductHit = {
   collection_id: string | null
 }
 
-type HitProps = {
+export type HitProps = {
   hit: ProductHit
 }
 
 const Hit = ({ hit }: HitProps) => {
   return (
-    <LocalizedClientLink href={`/products/${hit.handle}`}>
-      <Container
-        key={hit.id}
-        className="flex sm:flex-col gap-2 w-full p-4 shadow-elevation-card-rest hover:shadow-elevation-card-hover items-center sm:justify-center"
-      >
-        <Thumbnail
-          thumbnail={hit.thumbnail}
-          size="square"
-          className="group h-12 w-12 sm:h-full sm:w-full"
-        />
-        <div className="flex flex-col justify-between group">
-          <div className="flex flex-col">
-            <Text className="text-ui-fg-subtle">{hit.title}</Text>
-          </div>
+    <div key={hit.id} className="grid grid-cols-[86px_1fr] gap-4 w-full">
+      <Thumbnail thumbnail={hit.thumbnail} size="full" />
+      <div className="flex flex-col justify-between">
+        <div className="flex flex-col">
+          {hit.collection_id && (
+            <Link href={`/collections/${hit.collection_id}`}>
+              <a className="text-small-regular text-gray-500">
+                {hit.collection_handle}
+              </a>
+            </Link>
+          )}
+          <span className="text-base-regular">{hit.title}</span>
+          <span className="text-small-regular text-gray-700">
+            {hit.description}
+          </span>
         </div>
-      </Container>
-    </LocalizedClientLink>
+      </div>
+    </div>
   )
 }
 

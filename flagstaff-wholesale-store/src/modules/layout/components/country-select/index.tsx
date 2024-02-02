@@ -1,13 +1,9 @@
-"use client"
-
 import { Listbox, Transition } from "@headlessui/react"
-import { Region } from "@medusajs/medusa"
+import { useStore } from "@lib/context/store-context"
+import useToggleState from "@lib/hooks/use-toggle-state"
+import { useRegions } from "medusa-react"
 import { Fragment, useEffect, useMemo, useState } from "react"
 import ReactCountryFlag from "react-country-flag"
-
-import { StateType } from "@lib/hooks/use-toggle-state"
-import { updateRegion } from "app/actions"
-import { useParams, usePathname } from "next/navigation"
 
 type CountryOption = {
   country: string
@@ -15,18 +11,11 @@ type CountryOption = {
   label: string
 }
 
-type CountrySelectProps = {
-  toggleState: StateType
-  regions: Region[]
-}
-
-const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
+const CountrySelect = () => {
+  const { countryCode, setRegion } = useStore()
+  const { regions } = useRegions()
   const [current, setCurrent] = useState<CountryOption | undefined>(undefined)
-
-  const { countryCode } = useParams()
-  const currentPath = usePathname().split(`/${countryCode}`)[1]
-
-  const { state, close } = toggleState
+  const { state, open, close } = useToggleState()
 
   const options: CountryOption[] | undefined = useMemo(() => {
     return regions
@@ -38,7 +27,6 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
         }))
       })
       .flat()
-      .sort((a, b) => a.label.localeCompare(b.label))
   }, [regions])
 
   useEffect(() => {
@@ -46,29 +34,28 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
       const option = options?.find((o) => o.country === countryCode)
       setCurrent(option)
     }
-  }, [options, countryCode])
+  }, [countryCode, options])
 
   const handleChange = (option: CountryOption) => {
-    updateRegion(option.country, currentPath)
+    setRegion(option.region, option.country)
     close()
   }
 
   return (
-    <div>
+    <div onMouseEnter={open} onMouseLeave={close}>
       <Listbox
-        as="span"
         onChange={handleChange}
-        defaultValue={
+        value={
           countryCode
             ? options?.find((o) => o.country === countryCode)
             : undefined
         }
       >
         <Listbox.Button className="py-1 w-full">
-          <div className="txt-compact-small flex items-start gap-x-2">
+          <div className="text-small-regular flex items-center gap-x-2 xsmall:justify-end">
             <span>Shipping to:</span>
             {current && (
-              <span className="txt-compact-small flex items-center gap-x-2">
+              <span className="text-small-semi flex items-center gap-x-2">
                 <ReactCountryFlag
                   svg
                   style={{
@@ -82,7 +69,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             )}
           </div>
         </Listbox.Button>
-        <div className="flex relative w-full min-w-[320px]">
+        <div className="relative w-full min-w-[316px]">
           <Transition
             show={state}
             as={Fragment}
@@ -91,13 +78,13 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             leaveTo="opacity-0"
           >
             <Listbox.Options
-              className="absolute -bottom-[calc(100%-36px)] left-0 xsmall:left-auto xsmall:right-0 max-h-[442px] overflow-y-scroll z-[900] bg-white drop-shadow-md text-small-regular uppercase text-black no-scrollbar rounded-rounded w-full"
+              className="absolute -bottom-[calc(100%-36px)] left-0 xsmall:left-auto xsmall:right-0 max-h-[442px] overflow-y-scroll z-[900] bg-white drop-shadow-md text-small-regular uppercase text-black no-scrollbar"
               static
             >
-              {options?.map((o, index) => {
+              {options?.map((o) => {
                 return (
                   <Listbox.Option
-                    key={index}
+                    key={o.country}
                     value={o}
                     className="py-2 hover:bg-gray-200 px-3 cursor-pointer flex items-center gap-x-2"
                   >

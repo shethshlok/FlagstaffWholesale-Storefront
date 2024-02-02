@@ -1,56 +1,69 @@
-import { Order } from "@medusajs/medusa"
-import { Container, Heading, Text } from "@medusajs/ui"
-import { formatAmount } from "@lib/util/prices"
-
-import { paymentInfoMap } from "@lib/constants"
-import Divider from "@modules/common/components/divider"
+import { Payment, PaymentStatus } from "@medusajs/medusa"
 
 type PaymentDetailsProps = {
-  order: Order
+  payments: Payment[]
+  paymentStatus: PaymentStatus
 }
 
-const PaymentDetails = ({ order }: PaymentDetailsProps) => {
-  const payment = order.payments[0]
+const PaymentDetails = ({ payments, paymentStatus }: PaymentDetailsProps) => {
   return (
     <div>
-      <Heading level="h2" className="flex flex-row text-3xl-regular my-6">
-        Payment
-      </Heading>
-      <div>
-        {payment && (
-          <div className="flex items-start gap-x-1 w-full">
-            <div className="flex flex-col w-1/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
-              </Text>
-              <Text className="txt-medium text-ui-fg-subtle">
-                {paymentInfoMap[payment.provider_id].title}
-              </Text>
-            </div>
-            <div className="flex flex-col w-2/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment details
-              </Text>
-              <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
-                <Container className="flex items-center h-7 w-fit p-2 bg-ui-button-neutral-hover">
-                  {paymentInfoMap[payment.provider_id].icon}
-                </Container>
-                <Text>
-                  {payment.provider_id === "stripe" && payment.data.card_last4
-                    ? `**** **** **** ${payment.data.card_last4}`
-                    : `${formatAmount({
-                        amount: payment.amount,
-                        region: order.region,
-                        includeTaxes: false,
-                      })} paid at ${new Date(payment.created_at).toString()}`}
-                </Text>
-              </div>
-            </div>
-          </div>
-        )}
+      <h2 className="text-base-semi">Payment</h2>
+      <div className="my-2">
+        {payments.map((p) => {
+          switch (p.provider_id) {
+            case "stripe":
+              return <StripeDetails key={p.id} payment={p} />
+            case "paypal":
+              return <PayPalDetails key={p.id} />
+            case "manual":
+              return <TestDetails key={p.id} />
+            default:
+              return null
+          }
+        })}
       </div>
+    </div>
+  )
+}
 
-      <Divider className="mt-8" />
+const PayPalDetails = () => {
+  return (
+    <div className="flex flex-col text-base-regular">
+      <span className="text-small-regular text-gray-700">PayPal</span>
+      <span>PayPal payment</span>
+    </div>
+  )
+}
+
+const StripeDetails = ({ payment }: { payment: Payment }) => {
+  const card: {
+    brand: string
+    last4: string
+    exp_year: number
+    exp_month: number
+  } = (payment.data.charges as any).data[0].payment_method_details.card
+
+  return (
+    <div className="flex flex-col text-base-regular">
+      <span className="text-small-regular text-gray-700">
+        {card.brand.substring(0, 1).toUpperCase()}
+        {card.brand.substring(1)}
+      </span>
+      <span>************{card.last4}</span>
+      <span>
+        {card.exp_month > 9 ? card.exp_month : `0${card.exp_month}`} /{" "}
+        {card.exp_year.toString().slice(2)}
+      </span>
+    </div>
+  )
+}
+
+const TestDetails = () => {
+  return (
+    <div className="flex flex-col text-base-regular">
+      <span className="text-small-regular text-gray-700">Test</span>
+      <span>Test payment using medusa-payment-manual</span>
     </div>
   )
 }

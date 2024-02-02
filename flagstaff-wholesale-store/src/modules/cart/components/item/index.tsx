@@ -1,122 +1,73 @@
-"use client"
-
+import { useStore } from "@lib/context/store-context"
 import { LineItem, Region } from "@medusajs/medusa"
-import { Table, Text, clx } from "@medusajs/ui"
-
-import CartItemSelect from "@modules/cart/components/cart-item-select"
-import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
-import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
+import NativeSelect from "@modules/common/components/native-select"
+import Trash from "@modules/common/icons/trash"
 import Thumbnail from "@modules/products/components/thumbnail"
-import { updateLineItem } from "@modules/cart/actions"
-import Spinner from "@modules/common/icons/spinner"
-import { useState } from "react"
-import ErrorMessage from "@modules/checkout/components/error-message"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { CalculatedVariant } from "types/medusa"
 
 type ItemProps = {
   item: Omit<LineItem, "beforeInsert">
   region: Region
-  type?: "full" | "preview"
 }
 
-const Item = ({ item, region, type = "full" }: ItemProps) => {
-  const [updating, setUpdating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const { handle } = item.variant.product
-
-  const changeQuantity = async (quantity: number) => {
-    setError(null)
-    setUpdating(true)
-
-    const message = await updateLineItem({
-      lineId: item.id,
-      quantity,
-    })
-      .catch((err) => {
-        return err.message
-      })
-      .finally(() => {
-        setUpdating(false)
-      })
-
-    message && setError(message)
-  }
+const Item = ({ item, region }: ItemProps) => {
+  const { updateItem, deleteItem } = useStore()
 
   return (
-    <Table.Row className="w-full">
-      <Table.Cell className="!pl-0 p-4 w-24">
-        <LocalizedClientLink
-          href={`/products/${handle}`}
-          className={clx("flex", {
-            "w-16": type === "preview",
-            "small:w-24 w-12": type === "full",
-          })}
-        >
-          <Thumbnail thumbnail={item.thumbnail} size="square" />
-        </LocalizedClientLink>
-      </Table.Cell>
-
-      <Table.Cell className="text-left">
-        <Text className="txt-medium-plus text-ui-fg-base">{item.title}</Text>
-        <LineItemOptions variant={item.variant} />
-      </Table.Cell>
-
-      {type === "full" && (
-        <Table.Cell>
-          <div className="flex gap-2 items-center w-28">
-            <DeleteButton id={item.id} />
-            <CartItemSelect
-              value={item.quantity}
-              onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="w-14 h-10 p-4"
-            >
-              {Array.from(
-                {
-                  length: Math.min(
-                    item.variant.inventory_quantity > 0
-                      ? item.variant.inventory_quantity
-                      : 10,
-                    10
-                  ),
-                },
-                (_, i) => (
-                  <option value={i + 1} key={i}>
-                    {i + 1}
+    <div className="grid grid-cols-[122px_1fr] gap-x-4">
+      <div className="w-[122px]">
+        <Thumbnail thumbnail={item.thumbnail} size="full" />
+      </div>
+      <div className="text-base-regular flex flex-col gap-y-8">
+        <div className="flex items-start justify-between">
+          <div className="flex flex-col">
+            <span>{item.title}</span>
+            <LineItemOptions variant={item.variant} />
+          </div>
+          <NativeSelect
+            value={item.quantity}
+            onChange={(value) =>
+              updateItem({
+                lineId: item.id,
+                quantity: parseInt(value.target.value),
+              })
+            }
+            className="max-h-[35px] w-[75px]"
+          >
+            {Array.from([...Array(item.variant.inventory_quantity)].keys())
+              .slice(0, 10)
+              .map((i) => {
+                const value = i + 1
+                return (
+                  <option value={value} key={i}>
+                    {value}
                   </option>
                 )
-              )}
-            </CartItemSelect>
-            {updating && <Spinner />}
+              })}
+          </NativeSelect>
+        </div>
+        <div className="flex items-end justify-between text-small-regular flex-1">
+          <div>
+            <button
+              className="flex items-center gap-x-1 text-gray-500"
+              onClick={() => deleteItem(item.id)}
+            >
+              <Trash size={14} />
+              <span>Remove</span>
+            </button>
           </div>
-          <ErrorMessage error={error} />
-        </Table.Cell>
-      )}
-
-      {type === "full" && (
-        <Table.Cell className="hidden small:table-cell">
-          <LineItemUnitPrice item={item} region={region} style="tight" />
-        </Table.Cell>
-      )}
-
-      <Table.Cell className="!pr-0">
-        <span
-          className={clx("!pr-0", {
-            "flex flex-col items-end h-full justify-center": type === "preview",
-          })}
-        >
-          {type === "preview" && (
-            <span className="flex gap-x-1 ">
-              <Text className="text-ui-fg-muted">{item.quantity}x </Text>
-              <LineItemUnitPrice item={item} region={region} style="tight" />
-            </span>
-          )}
-          <LineItemPrice item={item} region={region} style="tight" />
-        </span>
-      </Table.Cell>
-    </Table.Row>
+          <div>
+            <LineItemPrice
+              variant={item.variant as CalculatedVariant}
+              quantity={item.quantity}
+              region={region}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 

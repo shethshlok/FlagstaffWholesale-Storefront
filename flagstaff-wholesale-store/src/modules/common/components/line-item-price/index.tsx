@@ -1,61 +1,63 @@
-import { formatAmount } from "@lib/util/prices"
-import { LineItem, Region } from "@medusajs/medusa"
-import { clx } from "@medusajs/ui"
-
 import { getPercentageDiff } from "@lib/util/get-precentage-diff"
+import { Region } from "@medusajs/medusa"
+import clsx from "clsx"
+import { formatAmount } from "medusa-react"
 import { CalculatedVariant } from "types/medusa"
 
 type LineItemPriceProps = {
-  item: Omit<LineItem, "beforeInsert">
+  variant: CalculatedVariant
   region: Region
+  quantity: number
   style?: "default" | "tight"
 }
 
 const LineItemPrice = ({
-  item,
+  variant,
   region,
+  quantity,
   style = "default",
 }: LineItemPriceProps) => {
-  const originalPrice =
-    (item.variant as CalculatedVariant).original_price * item.quantity
-  const hasReducedPrice = (item.total || 0) < originalPrice
+  const hasReducedPrice = variant.calculated_price < variant.original_price
 
   return (
-    <div className="flex flex-col gap-x-2 text-ui-fg-subtle items-end">
-      <div className="text-left">
-        {hasReducedPrice && (
-          <>
-            <p>
-              {style === "default" && (
-                <span className="text-ui-fg-subtle">Original: </span>
-              )}
-              <span className="line-through text-ui-fg-muted">
-                {formatAmount({
-                  amount: originalPrice,
-                  region: region,
-                  includeTaxes: false,
-                })}
-              </span>
-            </p>
+    <div className="flex flex-col text-gray-700 text-right">
+      <span
+        className={clsx("text-base-regular", {
+          "text-rose-600": hasReducedPrice,
+        })}
+      >
+        {formatAmount({
+          amount: variant.calculated_price * quantity,
+          region: region,
+          includeTaxes: false,
+        })}
+      </span>
+      {hasReducedPrice && (
+        <>
+          <p>
             {style === "default" && (
-              <span className="text-ui-fg-interactive">
-                -{getPercentageDiff(originalPrice, item.total || 0)}%
-              </span>
+              <span className="text-gray-500">Original: </span>
             )}
-          </>
-        )}
-        <span
-          className={clx("text-base-regular", {
-            "text-ui-fg-interactive": hasReducedPrice,
-          })}
-        >
-          {formatAmount({
-            amount: item.total || 0,
-            region: region,
-            includeTaxes: false,
-          })}
-        </span>
-      </div>
+            <span className="line-through">
+              {formatAmount({
+                amount: variant.original_price * quantity,
+                region: region,
+                includeTaxes: false,
+              })}
+            </span>
+          </p>
+          {style === "default" && (
+            <span className="text-rose-600">
+              -
+              {getPercentageDiff(
+                variant.original_price,
+                variant.calculated_price
+              )}
+              %
+            </span>
+          )}
+        </>
+      )}
     </div>
   )
 }

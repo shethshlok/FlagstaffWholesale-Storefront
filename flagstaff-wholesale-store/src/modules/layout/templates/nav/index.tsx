@@ -1,66 +1,89 @@
-import { headers } from "next/headers"
-import { Suspense } from "react"
+import { useMobileMenu } from "@lib/context/mobile-menu-context"
+import Hamburger from "@modules/common/components/hamburger"
+import CartDropdown from "@modules/layout/components/cart-dropdown"
+import DropdownMenu from "@modules/layout/components/dropdown-menu"
+import MobileMenu from "@modules/mobile-menu/templates"
+import DesktopSearchModal from "@modules/search/templates/desktop-search-modal"
+import clsx from "clsx"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 
-import { listRegions } from "@lib/data"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CartButton from "@modules/layout/components/cart-button"
-import SideMenu from "@modules/layout/components/side-menu"
+const Nav = () => {
+  const { pathname } = useRouter()
+  const [isHome, setIsHome] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
-export default async function Nav() {
-  const regions = await listRegions().then((regions) => regions)
+  //useEffect that detects if window is scrolled > 5px on the Y axis
+  useEffect(() => {
+    if (isHome) {
+      const detectScrollY = () => {
+        if (window.scrollY > 5) {
+          setIsScrolled(true)
+        } else {
+          setIsScrolled(false)
+        }
+      }
+
+      window.addEventListener("scroll", detectScrollY)
+
+      return () => {
+        window.removeEventListener("scroll", detectScrollY)
+      }
+    }
+  }, [isHome])
+
+  useEffect(() => {
+    pathname === "/" ? setIsHome(true) : setIsHome(false)
+  }, [pathname])
+
+  const { toggle } = useMobileMenu()
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
+    <div
+      className={clsx("sticky top-0 inset-x-0 z-50 group", {
+        "!fixed": isHome,
+      })}
+    >
+      <header
+        className={clsx(
+          "relative h-16 px-8 mx-auto transition-colors bg-black border-b border-gray-200"
+        )}
+      >
+        <nav
+          className={clsx(
+            "text-white flex items-center justify-between w-full h-full text-small-regular transition-colors duration-200"
+          )}
+        >
           <div className="flex-1 basis-0 h-full flex items-center">
-            <div className="h-full">
-              <SideMenu regions={regions} />
+            <div className="block small:hidden">
+              <Hamburger setOpen={toggle} />
+            </div>
+            <div className="hidden small:block h-full">
+              <DropdownMenu />
             </div>
           </div>
 
           <div className="flex items-center h-full">
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
-            >
-              Medusa Store
-            </LocalizedClientLink>
+            <Link href="/">
+              <a className="text-xl-semi uppercase">Medusa</a>
+            </Link>
           </div>
 
           <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
             <div className="hidden small:flex items-center gap-x-6 h-full">
-              {process.env.FEATURE_SEARCH_ENABLED && (
-                <LocalizedClientLink
-                  className="hover:text-ui-fg-base"
-                  href="/search"
-                  scroll={false}
-                >
-                  Search
-                </LocalizedClientLink>
-              )}
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base"
-                href="/account"
-              >
-                Account
-              </LocalizedClientLink>
+              {process.env.FEATURE_SEARCH_ENABLED && <DesktopSearchModal />}
+              <Link href="/account">
+                <a>Account</a>
+              </Link>
             </div>
-            <Suspense
-              fallback={
-                <LocalizedClientLink
-                  className="hover:text-ui-fg-base flex gap-2"
-                  href="/cart"
-                >
-                  Cart (0)
-                </LocalizedClientLink>
-              }
-            >
-              <CartButton />
-            </Suspense>
+            <CartDropdown />
           </div>
         </nav>
+        <MobileMenu />
       </header>
     </div>
   )
 }
+
+export default Nav

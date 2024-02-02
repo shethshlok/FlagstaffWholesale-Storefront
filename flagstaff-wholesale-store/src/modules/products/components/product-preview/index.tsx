@@ -1,55 +1,46 @@
-import { Text } from "@medusajs/ui"
-
+import clsx from "clsx"
+import Link from "next/link"
 import { ProductPreviewType } from "types/global"
-
-import { retrievePricedProductById } from "@lib/data"
-import { getProductPrice } from "@lib/util/get-product-price"
-import { Region } from "@medusajs/medusa"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
-import PreviewPrice from "./price"
 
-export default async function ProductPreview({
-  productPreview,
-  isFeatured,
-  region,
-}: {
-  productPreview: ProductPreviewType
-  isFeatured?: boolean
-  region: Region
-}) {
-  const pricedProduct = await retrievePricedProductById({
-    id: productPreview.id,
-    regionId: region.id,
-  }).then((product) => product)
-
-  if (!pricedProduct) {
-    return null
-  }
-
-  const { cheapestPrice } = getProductPrice({
-    product: pricedProduct,
-    region,
-  })
-
+const ProductPreview = ({
+  title,
+  handle,
+  thumbnail,
+  price,
+}: ProductPreviewType) => {
   return (
-    <LocalizedClientLink
-      href={`/products/${productPreview.handle}`}
-      className="group"
-    >
-      <div>
-        <Thumbnail
-          thumbnail={productPreview.thumbnail}
-          size="full"
-          isFeatured={isFeatured}
-        />
-        <div className="flex txt-compact-medium mt-4 justify-between">
-          <Text className="text-ui-fg-subtle">{productPreview.title}</Text>
-          <div className="flex items-center gap-x-2">
-            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
+    <Link href={`/products/${handle}`}>
+      <a>
+        <div className="p-2 rounded-xl transition-all hover:bg-gradient-to-r from-fuchsia-200 to-fuchsia-100 hover:scale-[1.02]">
+          <Thumbnail thumbnail={thumbnail} size="full" />
+          <div className="text-base-regular mt-2">
+            <span>{title}</span>
+            <div className="flex items-center gap-x-2 mt-1">
+              {price ? (
+                <>
+                  {price.price_type === "sale" && (
+                    <span className="line-through text-gray-500">
+                      {price.original_price}
+                    </span>
+                  )}
+                  <span
+                    className={clsx("font-semibold text-fuchsia-700", {
+                      "text-rose-500": price.price_type === "sale",
+                    })}
+                  >
+                    {price.calculated_price}
+                  </span>
+                </>
+              ) : (
+                <div className="w-20 h-6 animate-pulse bg-gray-100"></div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </LocalizedClientLink>
+      </a>
+    </Link>
   )
 }
+
+export default ProductPreview

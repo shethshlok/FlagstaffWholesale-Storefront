@@ -1,13 +1,23 @@
 import { ProductVariant } from "@medusajs/medusa"
-import { Text } from "@medusajs/ui"
 
 type LineItemOptionsProps = { variant: ProductVariant }
 
 const LineItemOptions = ({ variant }: LineItemOptionsProps) => {
   return (
-    <Text className="inline-block txt-medium text-ui-fg-subtle w-full overflow-hidden text-ellipsis">
-      Variant: {variant.title}
-    </Text>
+    <div className="text-small-regular text-gray-700">
+      {variant.options.map((option) => {
+        const optionName =
+          variant.product.options.find((opt) => opt.id === option.option_id)
+            ?.title || "Option"
+        return (
+          <div key={option.id}>
+            <span>
+              {optionName}: {option.value}
+            </span>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 

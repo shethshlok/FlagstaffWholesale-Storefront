@@ -1,40 +1,34 @@
-import { Checkbox, Label } from "@medusajs/ui"
 import React from "react"
 
 type CheckboxProps = {
   checked?: boolean
   onChange?: () => void
   label: string
-  name?: string
 }
 
-const CheckboxWithLabel: React.FC<CheckboxProps> = ({
-  checked = true,
+const Checkbox: React.FC<CheckboxProps> = ({
+  checked = false,
   onChange,
   label,
-  name,
 }) => {
   return (
-    <div className="flex items-center space-x-2 ">
-      <Checkbox
-        className="text-base-regular flex items-center gap-x-2"
-        id="checkbox"
+    <button
+      className="text-base-regular flex items-center gap-x-2"
+      role="checkbox"
+      type="button"
+      aria-checked={checked}
+      onClick={onChange}
+    >
+      <div
         role="checkbox"
-        type="button"
-        checked={checked}
         aria-checked={checked}
-        onClick={onChange}
-        name={name}
-      />
-      <Label
-        htmlFor="checkbox"
-        className="!transform-none !txt-medium"
-        size="large"
+        className="border border-gray-900 w-5 h-5 flex items-center justify-center"
       >
-        {label}
-      </Label>
-    </div>
+        {checked ? "✓" : null}
+      </div>
+      <span>{label}</span>
+    </button>
   )
 }
 
-export default CheckboxWithLabel
+export default Checkbox
