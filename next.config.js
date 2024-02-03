@@ -8,12 +8,14 @@ const nextConfig = withStoreConfig({
   features: store.features,
   reactStrictMode: true,
   images: {
-    domains: ["72.167.151.168"],
-    // remotePatterns: [
-    //   {
-    //     protocol: "http",
-    //     hostname: "72.167.151.168:9000",
-    //   },
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "72.167.151.168",
+        port: "9000",
+        pathname: "/uploads/*",
+        
+      },
     //   {
     //     protocol: "https",
     //     hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
@@ -26,7 +28,7 @@ const nextConfig = withStoreConfig({
     //     protocol: "https",
     //     hostname: "medusa-server-testing.s3.us-east-1.amazonaws.com",
     //   },
-    // ],
+    ],
   },
 })
 
