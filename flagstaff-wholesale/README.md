@@ -38,7 +38,7 @@ npx create-medusa-app@latest
 
 Check out [create-medusa-app docs](https://docs.medusajs.com/create-medusa-app) for more details and troubleshooting.
 
-# Overview
+# Overview of Project
 
 The Medusa Next.js Starter is built with:
 
