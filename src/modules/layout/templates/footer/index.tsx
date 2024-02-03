@@ -119,14 +119,24 @@ export default async function Footer() {
               <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
                 <li>
                   <a
-                    href="tel:+17024663898"
+                    href="tel:+19284404556"
                     target="_blank"
                     rel="noreferrer"
                     className="hover:text-ui-fg-base"
                   >
-                    Phone: +1 702 466 3898
+                    Phone: +1 928 440 4556
                   </a>
                 </li>
+                  <li>
+                    <a
+                      href="https://maps.google.com/?q=1490+South+Riordan+Ranch+St.+Flagstaff,+AZ+-+86001"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-ui-fg-base"
+                    >
+                      Address: 1490 South Riordan Ranch St. Flagstaff, AZ
+                    </a>
+                  </li>
                 {/* <li>
                   <a
                     href="https://docs.medusajs.com"
