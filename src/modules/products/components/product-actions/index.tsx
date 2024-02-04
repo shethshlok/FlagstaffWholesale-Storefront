@@ -143,7 +143,8 @@ export default function ProductActions({
           )}
         </div>
 
-        <ProductPrice product={product} variant={variant} region={region} />
+        {/* UNCOMMENT THIS TO DISPLAY THE PRICE ON THE PRODUCT PAGE */}
+        {/* <ProductPrice product={product} variant={variant} region={region} /> */}
 
         <Button
           onClick={handleAddToCart}
