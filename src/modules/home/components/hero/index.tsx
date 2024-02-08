@@ -26,7 +26,7 @@ const Hero = () => {
           </div>
         </span>
         <div>
-          <Image src={HeroImage.src} alt="Hero Image" />
+          <Image src={HeroImage.src} width={1200} height={800} alt="Hero Image" />
         </div>
         <Button onClick={redirectToStore}>Go to Store</Button>
       </div>
