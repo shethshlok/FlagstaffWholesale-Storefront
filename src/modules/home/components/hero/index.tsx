@@ -3,6 +3,7 @@
 import { Button, Heading } from "@medusajs/ui";
 import { useRouter } from 'next/navigation';
 import HeroImage from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage.png';
+import Image from 'next/image';
 
 const Hero = () => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const Hero = () => {
           </div>
         </span>
         <div>
-          <img src={HeroImage.src} alt="Hero Image" />
+          <Image src={HeroImage.src} alt="Hero Image" />
         </div>
         <Button onClick={redirectToStore}>Go to Store</Button>
       </div>
