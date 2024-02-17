@@ -4,7 +4,8 @@ import { Button, Heading } from "@medusajs/ui";
 import { useRouter } from 'next/navigation';
 import HeroImage1 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage.png';
 import HeroImage2 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage2.png';
-import HeroImage3 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage3.png';
+import HeroImage4 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage4.png';
+
 import Image from 'next/image';
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
@@ -38,8 +39,8 @@ const Hero = () => {
       url: HeroImage2.src,
     },
     {
-      id: 3,
-      url: HeroImage3.src,
+      id: 4,
+      url: HeroImage4.src,
     },
   ];
 
@@ -61,7 +62,7 @@ const Hero = () => {
         {images.map((image, index) => (
           <div key={index}>
             <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Image src={image.url} alt={`Hero Image ${index + 1}`} width={100} height={100} style={{ height: '60vh', width: 'auto' }} />
+              <Image src={image.url} alt={`Hero Image ${index + 1}`} width={1000} height={100} style={{ height: '60vh', width: 'auto' }} />
             </div>
           </div>
         ))}
