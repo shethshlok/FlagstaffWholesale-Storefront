@@ -4,6 +4,7 @@ import { Button, Heading } from "@medusajs/ui";
 import { useRouter } from 'next/navigation';
 import HeroImage1 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage.png';
 import HeroImage2 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage2.png';
+import HeroImage3 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage3.png';
 import Image from 'next/image';
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
@@ -36,21 +37,16 @@ const Hero = () => {
       id: 2,
       url: HeroImage2.src,
     },
+    {
+      id: 3,
+      url: HeroImage3.src,
+    },
   ];
 
   return (
-    <div className="h-[120vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
+    <div className="h-[80vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
       <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center gap-6">
-      <div className="w-full order-0 flex-0 flex-1-auto self-center">
-      <Slider {...settings}>
-        {images.map((image, index) => (
-          <div key={index}>
-            <Image src={image.url} alt={`Hero Image ${index + 1}`} width={1920} height={1080} />
-          </div>
-        ))}
-      </Slider>
-      </div>
-        <span>
+      <span>
           <div>
             <Heading
               level="h1"
@@ -60,6 +56,17 @@ const Hero = () => {
             </Heading>
           </div>
         </span>
+      <div className="w-full order-0 flex-0 flex-1-auto self-center">
+      <Slider {...settings}>
+        {images.map((image, index) => (
+          <div key={index}>
+            <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Image src={image.url} alt={`Hero Image ${index + 1}`} width={100} height={100} style={{ height: '60vh', width: 'auto' }} />
+            </div>
+          </div>
+        ))}
+      </Slider>
+      </div>
         <Button onClick={redirectToStore}>Go to Store</Button>
       </div>
     </div>
