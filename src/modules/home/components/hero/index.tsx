@@ -46,7 +46,7 @@ const Hero = () => {
 
   return (
     <div className="h-[80vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
-      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center gap-6">
+      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center small:p-32 text-center gap-6">
       <span>
           <div>
             <Heading
@@ -61,14 +61,14 @@ const Hero = () => {
       <Slider {...settings}>
         {images.map((image, index) => (
           <div key={index}>
-            <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
               <Image src={image.url} alt={`Hero Image ${index + 1}`} width={1000} height={100} style={{ height: '60vh', width: 'auto' }} />
             </div>
           </div>
         ))}
       </Slider>
       </div>
-        <Button onClick={redirectToStore}>Go to Store</Button>
+        <Button className="p-4" onClick={redirectToStore}>Go to Store</Button>
       </div>
     </div>
   );
