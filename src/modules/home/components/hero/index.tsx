@@ -24,7 +24,6 @@ const Hero = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
     autoplay: true, // Add autoplay setting
     autoplaySpeed: 3000, // Set autoplay speed to 3 seconds
   }
@@ -45,7 +44,7 @@ const Hero = () => {
   ];
 
   return (
-    <div className="h-[80vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
+    <div className="h-[80vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle overflow-x-hidden">
       <div className="absolute inset-0 z-10 flex flex-col justify-center items-center small:p-32 text-center gap-6">
       <span>
           <div>
