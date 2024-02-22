@@ -6,7 +6,7 @@ import NextJs from "../../../common/icons/nextjs"
 const MedusaCTA = () => {
   return (
     <Text className="flex gap-x-2 txt-compact-small-plus items-center">
-      Build By Shlok Sheth
+      <a href="mailto:shloksheth10@gmail.com">Build By Shlok Sheth</a>
     </Text>
   )
 }

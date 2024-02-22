@@ -14,10 +14,10 @@ type ProductTabsProps = {
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
   const tabs = [
-    // {
-    //   label: "Product Information",
-    //   component: <ProductInfoTab product={product} />,
-    // },
+    {
+      label: "Product Information",
+      component: <ProductInfoTab product={product} />,
+    },
     // {
     //   label: "Shipping & Returns",
     //   component: <ShippingInfoTab />,
@@ -27,7 +27,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
   return (
     <div className="w-full">
       <Accordion type="multiple">
-        {/* {tabs.map((tab, i) => (
+        {tabs.map((tab, i) => (
           <Accordion.Item
             key={i}
             title={tab.label}
@@ -36,7 +36,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
           >
             {tab.component}
           </Accordion.Item>
-        ))} */}
+        ))}
       </Accordion>
     </div>
   )
@@ -48,8 +48,8 @@ const ProductInfoTab = ({ product }: ProductTabsProps) => {
       <div className="grid grid-cols-2 gap-x-8">
         <div className="flex flex-col gap-y-4">
           <div>
-            <span className="font-semibold">Material</span>
-            <p>{product.material ? product.material : "-"}</p>
+            <span className="font-semibold">Puffs</span>
+            <p>{product.material ? product.material : "3000 puffs"}</p>
           </div>
           <div>
             <span className="font-semibold">Country of origin</span>
@@ -57,7 +57,7 @@ const ProductInfoTab = ({ product }: ProductTabsProps) => {
           </div>
           <div>
             <span className="font-semibold">Type</span>
-            <p>{product.type ? product.type.value : "-"}</p>
+            <p>{product.type ? product.type.value : "E-cigarette"}</p>
           </div>
         </div>
         <div className="flex flex-col gap-y-4">

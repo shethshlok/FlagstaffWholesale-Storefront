@@ -61,7 +61,7 @@ const Hero = () => {
         {images.map((image, index) => (
           <div key={index}>
             <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
-              <Image src={image.url} alt={`Hero Image ${index + 1}`} width={1000} height={100} style={{ height: '60vh', width: 'auto' }} />
+              <Image src={image.url} alt={`Hero Image ${index + 1}`} className="object-contain" width={1000} height={100} style={{ height: '60vh', width: 'auto' }} />
             </div>
           </div>
         ))}
