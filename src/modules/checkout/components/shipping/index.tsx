@@ -124,13 +124,15 @@ const Shipping: React.FC<ShippingProps> = ({
                         />
                         <span className="text-base-regular">{option.name}</span>
                       </div>
-                      <span className="justify-self-end text-ui-fg-base">
+                      
+                      {/* removed this chunk as the shipping cost is not updated */}
+                      {/* <span className="justify-self-end text-ui-fg-base">
                         {formatAmount({
                           amount: option.amount!,
                           region: cart?.region,
                           includeTaxes: false,
                         })}
-                      </span>
+                      </span> */}
                     </RadioGroup.Option>
                   )
                 })
