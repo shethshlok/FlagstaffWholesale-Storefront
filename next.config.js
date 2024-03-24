@@ -10,9 +10,8 @@ const nextConfig = withStoreConfig({
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "72.167.151.168",
-        port: "9000",
+        protocol: "https",
+        hostname: "admin.flagstaffwholesale.com",
         pathname: "/uploads/*",
         
       },

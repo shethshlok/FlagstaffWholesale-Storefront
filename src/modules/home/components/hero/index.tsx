@@ -2,9 +2,9 @@
 
 import { Button, Heading } from "@medusajs/ui";
 import { useRouter } from 'next/navigation';
-import HeroImage1 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage.png';
-import HeroImage2 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage2.png';
-import HeroImage4 from '/home/chiragpatel/flagstaff-wholesale-storefront/src/app/HeroImage4.png';
+import HeroImage1 from '/var/www/FlagstaffWholesale-Storefront/src/app/HeroImage.png';
+import HeroImage2 from '/var/www/FlagstaffWholesale-Storefront/src/app/HeroImage2.png';
+import HeroImage4 from '/var/www/FlagstaffWholesale-Storefront/src/app/HeroImage4.png';
 
 import Image from 'next/image';
 import Slider from "react-slick"
