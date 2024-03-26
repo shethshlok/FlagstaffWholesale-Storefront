@@ -21,7 +21,7 @@ export function SubmitButton({
       className={className}
       type="submit"
       isLoading={pending}
-      variant={variant}
+      variant={variant as "primary" | "secondary" | "transparent" | "danger" | undefined}
     >
       {children}
     </Button>

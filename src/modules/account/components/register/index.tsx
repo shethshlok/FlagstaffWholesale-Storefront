@@ -46,6 +46,12 @@ const Register = ({ setCurrentView }: Props) => {
             type="email"
             autoComplete="email"
           />
+          <Input
+            label="Business License Number"
+            name="licenseNumber"
+            required
+            autoComplete="license-number"
+          />
           <Input label="Phone" name="phone" type="tel" autoComplete="tel" />
           <Input
             label="Password"

@@ -27,6 +27,8 @@ export async function signUp(_currentState: unknown, formData: FormData) {
     first_name: formData.get("first_name"),
     last_name: formData.get("last_name"),
     phone: formData.get("phone"),
+    // Include the licenseNumber in the customer object
+    licenseNumber: formData.get("licenseNumber"),
   } as StorePostCustomersReq
 
   try {
