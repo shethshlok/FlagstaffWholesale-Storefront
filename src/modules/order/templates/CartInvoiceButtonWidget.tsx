@@ -38,7 +38,7 @@ const CartInvoiceButtonWidget = ({ order }: { order: Order }) => {
             <View style={styles.infoContainer}>
               <View style={styles.invoiceContainer}>
                 <View style={styles.invoiceName}>
-                  <Text style={styles.addressText}>Invoice `Number`: </Text>
+                  <Text style={styles.addressText}>Invoice Number: </Text>
                   <Text style={styles.addressText}>Invoice Date: </Text>
                   <Text style={styles.addressText}>Total Quantity: </Text>
                 </View>
