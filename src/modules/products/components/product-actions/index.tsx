@@ -15,6 +15,7 @@ import OptionSelect from "@modules/products/components/option-select"
 import MobileActions from "../mobile-actions"
 import ProductPrice from "../product-price"
 
+
 type ProductActionsProps = {
   product: PricedProduct
   region: Region
@@ -30,7 +31,7 @@ export type PriceType = {
 export default function ProductActions({
   product,
   region,
-}: ProductActionsProps): JSX.Element {
+}: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string>>({})
   const [isAdding, setIsAdding] = useState(false)
 
@@ -108,17 +109,33 @@ export default function ProductActions({
 
   const inView = useIntersection(actionsRef, "0px")
 
-  // add the selected variant to the cart
+  const [quantity, setQuantity] = useState(1) // State for quantity
+
+  // Add the selected variant to the cart
   const handleAddToCart = async () => {
-    if (!variant?.id) return
-    setIsAdding(true)
+    if (!variant?.id) return null;
+
+    setIsAdding(true);
+
+    console.log("Quantity is: ", quantity);
+
     await addToCart({
       variantId: variant.id,
-      quantity: 1,
-      countryCode: countryCode,
-    })
-    setIsAdding(false)
-  }
+      quantity: quantity, // Use the quantity state
+      countryCode,
+    });
+
+    setQuantity(0);
+
+    setIsAdding(false);
+ }
+
+  useEffect(() => {
+    if (variants.length > 0 && variants[0].id) {
+      setOptions(variantRecord[variants[0].id]);
+      setQuantity(1); // Set quantity to 1 by default
+    }
+  }, [variants, variantRecord]);
 
   return (
     <>
@@ -126,25 +143,56 @@ export default function ProductActions({
         <div>
           {product.variants.length > 1 && (
             <div className="flex flex-col gap-y-4">
-              {(product.options || []).map((option) => {
-                return (
-                  <div key={option.id}>
-                    <OptionSelect
-                      option={option}
-                      current={options[option.id]}
-                      updateOption={updateOptions}
-                      title={option.title}
-                    />
-                  </div>
-                )
-              })}
+              <table className="border-collapse border rounded">
+                <thead>
+                 <tr>
+                    <th className="border border-gray-300 p-2">Variant</th>
+                    <th className="border border-gray-300 p-2">Quantity</th>
+                 </tr>
+                </thead>
+                <tbody>
+                 {(product.options || []).map((option) => {
+                    // Render the select options for each option
+                    return (
+                      <tr key={option.id}>
+                        <td className="border border-gray-300 p-2">
+                          <select
+                            value={options[option.id] || ""}
+                            onChange={(e) =>
+                              updateOptions({ [option.id]: e.target.value })
+                            }
+                            className="p-1 rounded"
+                          >
+                            {option.values.map((value) => (
+                              <option key={value.value} value={value.value}>
+                                {value.value}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          <select
+                            value={quantity}
+                            onChange={(e) => setQuantity(parseInt(e.target.value))}
+                            className="p-1 rounded"
+                          >
+                            {Array.from(Array(10), (_, index) => index + 1).map((quantity) => (
+                              <option key={quantity} value={quantity}>
+                                {quantity}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
+                    );
+                 })}
+                </tbody>
+              </table>
               <Divider />
             </div>
           )}
         </div>
-
-        {/* UNCOMMENT THIS TO DISPLAY THE PRICE ON THE PRODUCT PAGE */}
-        {/* <ProductPrice product={product} variant={variant} region={region} /> */}
+        <ProductPrice product={product} variant={variant} region={region} />
 
         <Button
           onClick={handleAddToCart}

@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 const AdvertisementBanner = () => {
   return (
-    <Link href="http://72.167.151.168:8000/us/products/ebcreate-bc-5000">
+    <Link href="https://flagstaffwholesale.com/us/products/ebcreate-bc-5000">
     <div style={{ backgroundColor: "#f2f4ff", textAlign: "center", display: "flex", justifyContent: "space-evenly", width: "100%" }}>
       <div className='flex w-[20vh] h-[8vh]'>
       <Image
