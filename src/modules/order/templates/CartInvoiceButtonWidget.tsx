@@ -68,15 +68,15 @@ const CartInvoiceButtonWidget = ({ order }: { order: Order }) => {
                 <Text style={{ ...styles.tableColumnName, marginRight: 10 }}>Item</Text>
                 <Text style={{ ...styles.tableColumnName, marginRight: 60 }}>Description</Text>
                 <Text style={styles.tableColumnName}>Price</Text>
-                <Text style={{ ...styles.tableColumn, marginLeft: 10 }}>Quantity</Text>
-                <Text style={{ ...styles.tableColumn, marginRight: -5 }}>Total</Text>
+                <Text style={{ ...styles.tableColumnName, marginLeft: 10 }}>Quantity</Text>
+                <Text style={{ ...styles.tableColumnName, marginRight: -5 }}>Total</Text>
               </View>
               <View style={styles.hr}></View>
             {order.items.map((item, index) => (
                 <View key={index}>
                     <View style={styles.tableRow}>
-                        <Text style={{ ...styles.tableColumnName, marginRight: 20 }}>{item.title}</Text>
-                        <Text style={{ ...styles.tableColumnName, marginRight: 70 }}>{item.description}</Text>
+                        <Text style={{ ...styles.tableColumn, marginRight: 20 }}>{item.title}</Text>
+                        <Text style={{ ...styles.tableColumn, marginRight: 70 }}>{item.description}</Text>
                         <Text style={styles.tableColumn}>${(item.unit_price / 100).toFixed(2)}</Text>
                         <Text style={{ ...styles.tableColumn, marginLeft: 30 }}>{item.quantity}</Text>
                         <Text style={styles.tableColumn}>${(item.total ?? 0 / 100).toFixed(2)}</Text>
