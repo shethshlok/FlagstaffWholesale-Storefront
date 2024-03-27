@@ -21,6 +21,8 @@ type ProductActionsProps = {
   region: Region
 }
 
+type OptionState = Record<string, string | string[]>
+type QuantityState = Record<string, number>
 export type PriceType = {
   calculated_price: string
   original_price?: string
@@ -32,23 +34,49 @@ export default function ProductActions({
   product,
   region,
 }: ProductActionsProps) {
-  const [options, setOptions] = useState<Record<string, string>>({})
+  const [options, setOptions] = useState<OptionState>({})
+  
+  const [quantities, setQuantities] = useState<QuantityState>({})
   const [isAdding, setIsAdding] = useState(false)
 
   const countryCode = useParams().countryCode as string
 
   const variants = product.variants
 
-  // initialize the option state
+  // for mobile actions
+    // add the selected variant to the cart
+    const [mobileOptions, setMobileOptions] = useState<Record<string, string>>({})
+    const handleMobileAddToCart = async () => {
+      if (!variant?.id) return null
+  
+      setIsAdding(true)
+  
+      await addToCart({
+        variantId: variant.id,
+        quantity: 1,
+        countryCode,
+      })
+  
+      setIsAdding(false)
+    }
+      // update the options when a variant is selected
+  const updateMobileOptions = (update: Record<string, string>) => {
+    setMobileOptions({ ...mobileOptions, ...update })
+  }
+
+  // initialize the option and quantity state
   useEffect(() => {
-    const optionObj: Record<string, string> = {}
+    const optionObj: OptionState = {};
+    const quantityObj: QuantityState = {};
 
     for (const option of product.options || []) {
-      Object.assign(optionObj, { [option.id]: undefined })
+      optionObj[option.id] = [];
     }
 
-    setOptions(optionObj)
+    setOptions(optionObj);
+    setQuantities(quantityObj);
   }, [product])
+
 
   // memoized record of the product's variants
   const variantRecord = useMemo(() => {
@@ -76,6 +104,7 @@ export default function ProductActions({
     for (const key of Object.keys(variantRecord)) {
       if (isEqual(variantRecord[key], options)) {
         variantId = key
+        break
       }
     }
 
@@ -89,10 +118,19 @@ export default function ProductActions({
     }
   }, [variants, variantRecord])
 
-  // update the options when a variant is selected
-  const updateOptions = (update: Record<string, string>) => {
-    setOptions({ ...options, ...update })
-  }
+// update the options and quantities when a variant is selected
+const updateOptions = (optionId: string, value: string, quantity: number) => {
+  setOptions((prevOptions) => ({
+    ...prevOptions,
+    [optionId]: Array.isArray(prevOptions[optionId])
+      ? [...prevOptions[optionId] as string[], value]
+      : value,
+  }));
+  setQuantities((prevQuantities) => ({
+    ...prevQuantities,
+    [optionId]: quantity,
+  }));
+}
 
   // check if the selected variant is in stock
   const inStock = useMemo(() => {
@@ -106,34 +144,35 @@ export default function ProductActions({
   }, [variant])
 
   const actionsRef = useRef<HTMLDivElement>(null)
-
+  type OptionState = Record<string, string | string[]>;
   const inView = useIntersection(actionsRef, "0px")
 
-  const [quantity, setQuantity] = useState(1) // State for quantity
+// Add the selected variant to the cart
+const handleAddToCart = async () => {
+  setIsAdding(true);
 
-  // Add the selected variant to the cart
-  const handleAddToCart = async () => {
-    if (!variant?.id) return null;
+  console.log("Quantities are: ", quantities);
 
-    setIsAdding(true);
+  // Iterate through selected variants and add them to cart with respective quantities
+  for (const variantId of Object.keys(quantities)) {
+    const variant = variants.find((v) => v.id === variantId);
+    if (variant) {
+      await addToCart({
+        variantId,
+        quantity: quantities[variantId],
+        countryCode,
+      });
+    }
+  }
 
-    console.log("Quantity is: ", quantity);
-
-    await addToCart({
-      variantId: variant.id,
-      quantity: quantity, // Use the quantity state
-      countryCode,
-    });
-
-    setQuantity(0);
-
-    setIsAdding(false);
- }
+  setQuantities(Object.fromEntries(Object.keys(quantities).map(key => [key, 0]))); // Reset quantities to 0
+  setIsAdding(false);
+}
 
   useEffect(() => {
     if (variants.length > 0 && variants[0].id) {
       setOptions(variantRecord[variants[0].id]);
-      setQuantity(1); // Set quantity to 1 by default
+      setQuantities(Object.fromEntries(Object.keys(quantities).map(key => [key, 0]))); // Reset quantities to 0
     }
   }, [variants, variantRecord]);
 
@@ -151,41 +190,36 @@ export default function ProductActions({
                  </tr>
                 </thead>
                 <tbody>
-                 {(product.options || []).map((option) => {
-                    // Render the select options for each option
-                    return (
-                      <tr key={option.id}>
-                        <td className="border border-gray-300 p-2">
-                          <select
-                            value={options[option.id] || ""}
-                            onChange={(e) =>
-                              updateOptions({ [option.id]: e.target.value })
-                            }
-                            className="p-1 rounded"
-                          >
-                            {option.values.map((value) => (
-                              <option key={value.value} value={value.value}>
-                                {value.value}
-                              </option>
-                            ))}
-                          </select>
+                {variants.map((variant) => (
+                    <tr key={variant.id}>
+                      {variant.options && variant.options.map((option) => (
+                        <td
+                          key={option.option_id}
+                          className="border border-gray-300 p-2"
+                        >
+                          {option.value}
                         </td>
-                        <td className="border border-gray-300 p-2">
-                          <select
-                            value={quantity}
-                            onChange={(e) => setQuantity(parseInt(e.target.value))}
-                            className="p-1 rounded"
-                          >
-                            {Array.from(Array(10), (_, index) => index + 1).map((quantity) => (
-                              <option key={quantity} value={quantity}>
-                                {quantity}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                      </tr>
-                    );
-                 })}
+                      ))}
+                      <td className="border border-gray-300 p-2">
+                        <select
+                          value={quantities[String(variant.id)] || 0}
+                          onChange={(e) =>
+                            setQuantities((prevQuantities) => ({
+                              ...prevQuantities,
+                              [String(variant.id)]: parseInt(e.target.value),
+                            }))
+                          }
+                          className="p-1 rounded"
+                        >
+                          {Array.from(Array(10), (_, index) => index).map((quantity) => (
+  <option key={quantity} value={quantity}>
+    {quantity}
+  </option>
+))}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <Divider />
@@ -211,10 +245,10 @@ export default function ProductActions({
           product={product}
           variant={variant}
           region={region}
-          options={options}
-          updateOptions={updateOptions}
+          options={mobileOptions}
+          updateOptions={updateMobileOptions}
           inStock={inStock}
-          handleAddToCart={handleAddToCart}
+          handleAddToCart={handleMobileAddToCart}
           isAdding={isAdding}
           show={!inView}
         />
