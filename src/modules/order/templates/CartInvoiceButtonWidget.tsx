@@ -101,13 +101,13 @@ const CartInvoiceButtonWidget = ({ order }: { order: Order }) => {
         <View style={styles.footer}>
               <View style={styles.hr}></View>
               <Text style={styles.footerText}>Thanks for doing business with us!</Text>
-              <Text style={{ ...styles.footerText, textAlign: 'center', fontSize: 10}}>
+              <Text style={{ ...styles.footerText, textAlign: 'center', fontSize: 5}}>
                 Disclaimer: By purchasing these products you agree to use products at your own risk. Under no circumstances will FLAGSTAFF WHOLESALE INC. be held responsible or liable directly or indirectly for any damage that is caused or alleged to have been caused in connection with use of, or reliance on any product on this invoice.
               </Text>
-              <Text style={{ ...styles.footerText, textAlign: 'center', fontSize: 10 }}>
+              <Text style={{ ...styles.footerText, textAlign: 'center', fontSize: 5 }}>
                 *ALL SALES ARE FINAL, NO RETURNS OR CREDITS; PLEASE BE ADVISED*
               </Text>
-              <Text style={{ ...styles.footerText, textAlign: 'center', fontSize: 10 }}>
+              <Text style={{ ...styles.footerText, textAlign: 'center', fontSize: 5 }}>
                 Tax ID: 84-5030893
               </Text>
         </View>
